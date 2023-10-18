@@ -25,9 +25,9 @@ def send_request():
         if response.status_code == 200:
             return render_template('base.html', data=response.text, region=metadata['region'], zone=metadata['zone'], subnet=metadata['subnet'], instance_id=metadata['instance_id'])
         else:
-            return render_template('base.html', data=f"Failed to send request. Status code: {response.status_code}")
+            return render_template('base.html', data=f"Failed to send request. Status code: {response.status_code}", region=metadata['region'], zone=metadata['zone'], subnet=metadata['subnet'], instance_id=metadata['instance_id'])
     except requests.RequestException as e:
-        return render_template('base.html', data=f"Request failed with error: {e}")
+        return render_template('base.html', data=f"Request failed with error: {e}",region=metadata['region'], zone=metadata['zone'], subnet=metadata['subnet'], instance_id=metadata['instance_id'])
 
 def main(url):
     app.run(debug=True)
