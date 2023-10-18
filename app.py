@@ -4,13 +4,26 @@ import sys
 
 app = Flask(__name__)
 
+def get_instance_metadata():
+    metadata = {}
+    try:
+        metadata['region'] = requests.get('http://169.254.169.254/latest/meta-data/placement/availability-zone').text[:-1]
+        metadata['zone'] = requests.get('http://169.254.169.254/latest/meta-data/placement/availability-zone').text
+        metadata['subnet'] = requests.get('http://169.254.169.254/latest/meta-data/network/interfaces/macs/{}/subnet-id'.format(requests.get('http://169.254.169.254/latest/meta-data/mac').text)).text
+        metadata['instance_id'] = requests.get('http://169.254.169.254/latest/meta-data/instance-id').text
+    except requests.RequestException as e:
+        metadata['error'] = str(e)
+
+    return metadata
+
 @app.route('/')
 def send_request():
-    url = sys.argv[1]+"api/product/apple"  # Replace with the URL of the web application you want to send a request to
+    metadata = get_instance_metadata()
+    url = sys.argv[1]+"/api/product/apple"  # Replace with the URL of the web application you want to send a request to
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            return render_template('base.html', data=response.text)
+            return render_template('base.html', data=response.text, region=metadata['region'], zone=metadata['zone'], subnet=metadata['subnet'], instance_id=metadata['instance_id'])
         else:
             return render_template('base.html', data=f"Failed to send request. Status code: {response.status_code}")
     except requests.RequestException as e:
