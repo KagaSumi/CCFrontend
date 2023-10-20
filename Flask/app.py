@@ -19,7 +19,7 @@ def get_instance_metadata():
 @app.route('/')
 def send_request():
     metadata = get_instance_metadata()
-    url = sys.argv[1]+"/apple"  # Replace with the URL of the web application you want to send a request to
+    url = f"http://{sys.argv[1]}+/apple"  # Replace with the URL of the web application you want to send a request to
     try:
         response = requests.get(url)
         if response.status_code == 200:
