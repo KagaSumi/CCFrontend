@@ -1,8 +1,8 @@
 from flask import Flask, render_template
-import requests
-import sys
+import requests, sys, random
 
 app = Flask(__name__)
+fruits = ("apple","orange","bananas")
 
 def get_instance_metadata():
     metadata = {}
@@ -19,7 +19,7 @@ def get_instance_metadata():
 @app.route('/')
 def send_request():
     metadata = get_instance_metadata()
-    url = f"http://{sys.argv[1]}/apple"  # Replace with the URL of the web application you want to send a request to
+    url = f"http://{sys.argv[1]}/{random.choice(fruits)}"  # Replace with the URL of the web application you want to send a request to
     try:
         response = requests.get(url)
         if response.status_code == 200:
